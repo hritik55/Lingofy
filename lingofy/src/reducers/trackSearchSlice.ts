@@ -11,7 +11,7 @@ type AlbumType = {
   id: string;
 };
 
-type ArtistType = {
+export type ArtistType = {
   id: string;
   name: string;
   type: string;
@@ -48,6 +48,11 @@ type SearchPayload = {
   searchText: string;
   accessToken: string;
 };
+type SearchRecentPlayedPayload = {
+  limit: number;
+  offset?: number;
+  accessToken: string;
+};
 
 export const fetchTracks = createAsyncThunk(
   "tracks/fetchTracksStatus",
@@ -57,6 +62,18 @@ export const fetchTracks = createAsyncThunk(
       payload.accessToken
     );
     return response.body.tracks?.items;
+  }
+);
+
+export const fetchRecentlyPlayedTracks = createAsyncThunk(
+  "tracks/fetchRecentlyPlayedStatus",
+  async (payload: SearchRecentPlayedPayload) => {
+    const response = await tracksApi.getRecentlyPlayed(
+      payload.limit,
+      payload.offset ? payload.offset : 0,
+      payload.accessToken
+    );
+    return response.body.items;
   }
 );
 
@@ -87,6 +104,31 @@ export const tracksSlice = createSlice({
             : "",
           uri: track.uri,
           id: track.id,
+        };
+      });
+    });
+    builder.addCase(fetchRecentlyPlayedTracks.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchRecentlyPlayedTracks.rejected, (state, action) => {
+      state.isError = true;
+      console.log(action.payload);
+    });
+    builder.addCase(fetchRecentlyPlayedTracks.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.data = action.payload?.map((track) => {
+        return {
+          name: track.track.name,
+          album: track.track.album,
+          artists: track.track.artists,
+          image: track.track.album.images
+            ? track.track.album.images.reduce((smallest, image) => {
+                if (image?.height < smallest?.height) return image;
+                return smallest;
+              }, track.track.album.images[0])
+            : "",
+          uri: track.track.uri,
+          id: track.track.id,
         };
       });
     });

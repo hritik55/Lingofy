@@ -1,13 +1,13 @@
 import express, { Request, Response } from "express";
+import { check, query, validationResult } from "express-validator";
 import SpotifyWebApi from "spotify-web-api-node";
 import cors from "cors";
 const Genius = require("genius-lyrics");
-import bodyParser from "body-parser";
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const geniusClient = new Genius.Client();
 
@@ -57,16 +57,39 @@ app.post("/login", (req: Request, res: Response) => {
     });
 });
 
-app.get("/lyrics", async (req: Request, res: Response) => {
-  // if (req.query.track.toString()) res.status(400);
-  // const song = await geniusClient.songs.search(req.query.track.toString());
-  // let lyrics = await song[0].lyrics();
-  // if (Boolean(lyrics)) {
-  //   res.json({ lyrics });
-  // } else {
-  //   res.json({});
-  // }
-  res.json({ "Lyrics not found": "lyrics found not" });
-  res.status(200);
-});
+const lyricsInputValidator = [
+  query("track")
+    .isString()
+    .not()
+    .isEmpty()
+    .withMessage("Track cannot be empty."),
+  query("artist")
+    .isString()
+    .not()
+    .isEmpty()
+    .withMessage("Song cannot be empty."),
+];
+
+app.get(
+  "/lyrics",
+  lyricsInputValidator,
+  async (req: Request, res: Response) => {
+    //if (req.query.track.toString()) res.status(400);
+    const searches = await geniusClient.songs.search(
+      req.query.track.toString()
+    );
+    const song = searches.find(
+      (s) => s.artist.name === req.query.artist.toString()
+    );
+    console.log(song);
+    if (song) {
+      let lyrics = await song.lyrics();
+      if (Boolean(lyrics)) {
+        res.json({ lyrics });
+      }
+    } else {
+      res.json({ "Lyrics not found": "lyrics found not" });
+    }
+  }
+);
 export default app;

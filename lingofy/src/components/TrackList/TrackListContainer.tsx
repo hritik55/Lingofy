@@ -1,15 +1,23 @@
 import TrackItem from "./TrackItem";
 import styled from "styled-components";
 import { isEmpty } from "lodash";
-import { ITrack } from "../../reducers/trackSearchSlice";
+import { ArtistType, ITrack } from "../../reducers/trackSearchSlice";
 import { useAppSelector } from "../../hooks/reducerhooks";
 
 type TrackListProps = {
   data: ITrack[];
   isLoading: boolean;
   isError: boolean;
+  isTiled?: boolean;
+  cardOnClickHandler: (track: string, artists: ArtistType[]) => void;
 };
-function TrackListContainer({ data, isLoading, isError }: TrackListProps) {
+function TrackListContainer({
+  data,
+  isLoading,
+  isError,
+  isTiled = false,
+  cardOnClickHandler,
+}: TrackListProps) {
   const player = useAppSelector((state) => state.player);
 
   if (isError) return <p>{"Error"}</p>;
@@ -24,6 +32,8 @@ function TrackListContainer({ data, isLoading, isError }: TrackListProps) {
               key={`${track.name}-${track.id}`}
               track={track}
               isPlaying={player.activeSong?.id === track.id}
+              isTiled={isTiled}
+              handleOnCardClick={cardOnClickHandler}
             />
           );
         })

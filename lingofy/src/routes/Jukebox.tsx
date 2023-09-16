@@ -2,7 +2,7 @@ import { useState, useEffect, KeyboardEvent } from "react";
 import styled from "styled-components";
 import { fetchTracks } from "../reducers/trackSearchSlice";
 import { useAppSelector, useAppDispatch } from "../hooks/reducerhooks";
-import { TextField, Section, Flex } from "@radix-ui/themes";
+import { TextField, Section } from "@radix-ui/themes";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import TrackList from "../components/TrackList/TrackListContainer";
 import Player from "../components/Player/Player";
@@ -12,7 +12,6 @@ function Jukebox() {
   const [searchText, setSearchText] = useState("");
   const accessToken = useAppSelector((state) => state.accessToken.value);
   const { isError, isLoading, data } = useAppSelector((state) => state.tracks);
-  const userInfo = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   const handleSearch = () => {
@@ -67,7 +66,7 @@ const StyledJukebox = styled.div/*css*/ `
   flex-flow: column nowrap;
   justify-content: space-between;
   height: 100vh;
-  
+
   header {
     h1 {
       font-size: 2rem;

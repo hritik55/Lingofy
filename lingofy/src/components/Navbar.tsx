@@ -52,7 +52,7 @@ function Navbar() {
       <Link to="dashboard" className="link">
         <HomeIcon width={25} />
       </Link>
-      <Link to="practice" className="link">
+      <Link to="learning" className="link">
         <TargetIcon width={25} />
       </Link>
     </StyledNav>

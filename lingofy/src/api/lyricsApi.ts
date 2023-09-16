@@ -2,7 +2,7 @@ import axios from "axios";
 
 class LyricsApi {
   getLyrics(track?: string, artist?: string) {
-    axios.get("http://localhost:3001/lyrics", {
+    return axios.get("http://localhost:3001/lyrics", {
       params: {
         track,
         artist,

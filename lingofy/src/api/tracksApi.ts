@@ -9,6 +9,14 @@ class TracksApi {
     this.spotifyWebApi.setAccessToken(accessToken);
     return this.spotifyWebApi.searchTracks(searchText);
   }
+
+  getRecentlyPlayed(limit: number, offset: number, accessToken: string) {
+    this.spotifyWebApi.setAccessToken(accessToken);
+    return this.spotifyWebApi.getMyRecentlyPlayedTracks({
+      limit: limit,
+      after: offset,
+    });
+  }
 }
 
 const tracksApi = new TracksApi();

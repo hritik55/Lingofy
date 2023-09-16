@@ -6,7 +6,7 @@ import { useAppDispatch } from "../hooks/reducerhooks";
 import { addAccessToken } from "../reducers/accessTokenSlice";
 
 const AUTH_URL =
-  "https://accounts.spotify.com/authorize?client_id=409dbeb467904e7db94440c972c4a91a&response_type=code&redirect_uri=http://localhost:5173&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
+  "https://accounts.spotify.com/authorize?client_id=409dbeb467904e7db94440c972c4a91a&response_type=code&redirect_uri=http://localhost:5173&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state%20user-read-recently-played";
 
 function Login() {
   const accessToken = useAuth();
